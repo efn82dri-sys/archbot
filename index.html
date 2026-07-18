@@ -2,136 +2,700 @@
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>IRarchit - مرجع معماری و عمران</title>
-    <!-- تلگرام وب اپ -->
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ربات مرجع فایل‌های معماری و عمران</title>
     <style>
         @import url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/vazirmatn-font-face.css');
         
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Vazirmatn', Tahoma, sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background-color: #0d0d0d; display: flex; justify-content: center; align-items: center; min-height: 100vh; color: #ffffff; overflow: hidden; }
-        
-        .phone-container { width: 100%; max-width: 410px; height: 100vh; background: linear-gradient(135deg, #117543 0%, #1c9441 40%, #7ca81e 100%); border-radius: 40px; position: relative; display: flex; flex-direction: column; overflow: hidden; }
-        
-        .top-bar { height: 60px; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; }
-        .close-btn { width: 36px; height: 36px; background: rgba(255, 255, 255, 0.1); border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; }
-        
-        .app-card { flex: 1; background: rgba(255, 255, 255, 0.12); backdrop-filter: blur(25px); margin: 10px 16px 20px 16px; border-radius: 28px; padding: 24px 20px; display: flex; flex-direction: column; overflow-y: auto; }
-        
-        .screen { display: none; flex-direction: column; height: 100%; }
-        .screen.active { display: flex; }
-        
-        .question-text { font-size: 16px; font-weight: 700; margin-bottom: 20px; text-align: center; }
-        .options-list { display: flex; flex-direction: column; gap: 10px; flex: 1; }
-        .option-item { background: rgba(255, 255, 255, 0.08); border: 1.5px solid rgba(255, 255, 255, 0.1); padding: 14px 18px; border-radius: 16px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
-        .option-item.selected { background: rgba(52, 199, 89, 0.3); border-color: #34c759; }
-        
-        .btn { width: 100%; padding: 14px; border-radius: 16px; font-size: 14px; font-weight: 700; border: none; cursor: pointer; margin-top: 20px; background-color: #ffffff; color: #1c9441; }
-        .btn:disabled { opacity: 0.5; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Kalameh', 'Vazirmatn', Tahoma, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-        .terms-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.8); z-index: 100; display: flex; justify-content: center; align-items: center; padding: 20px; }
-        .terms-overlay.hidden { display: none; }
-        .terms-popup { background: white; color: black; padding: 20px; border-radius: 20px; text-align: center; }
+        body {
+            background-color: #0d0d0d;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #ffffff;
+            padding: 10px;
+        }
+
+        /* Mockup Mobile Container mimicking Telegram Mini App */
+        .phone-container {
+            width: 100%;
+            max-width: 410px;
+            height: 840px;
+            background: linear-gradient(135deg, #117543 0%, #1c9441 40%, #7ca81e 100%);
+            border-radius: 40px;
+            position: relative;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.6);
+            overflow: hidden;
+            border: 6px solid #2d2d2d;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top Status Bar Controls */
+        .top-bar {
+            height: 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .close-btn {
+            width: 36px;
+            height: 36px;
+            background: rgba(25px, 25px, 25px, 0.2);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .bot-title-center {
+            text-align: center;
+        }
+
+        .bot-title-center h1 {
+            font-size: 15px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .bot-title-center p {
+            font-size: 11px;
+            color: rgba(255,255,255,0.7);
+        }
+
+        .more-btn {
+            display: flex;
+            gap: 3px;
+            cursor: pointer;
+            background: rgba(25px, 25px, 25px, 0.2);
+            padding: 10px 12px;
+            border-radius: 20px;
+        }
+
+        .more-btn span {
+            width: 5px;
+            height: 5px;
+            background: white;
+            border-radius: 50%;
+        }
+
+        /* Main App Body Card */
+        .app-card {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            margin: 10px 16px 20px 16px;
+            border-radius: 28px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 24px 20px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow-y: auto;
+        }
+
+        /* Hide Scrollbar for clean UI */
+        .app-card::-webkit-scrollbar {
+            width: 0px;
+            background: transparent;
+        }
+
+        /* Header Info Inside Card */
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 16px;
+        }
+
+        .group-icon {
+            width: 44px;
+            height: 44px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+        }
+
+        .group-details h2 {
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .group-details p {
+            font-size: 11px;
+            color: rgba(255,255,255,0.7);
+            margin-top: 2px;
+        }
+
+        /* Progress Bar Section */
+        .quiz-progress {
+            margin-bottom: 24px;
+        }
+
+        .progress-text {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            color: rgba(255,255,255,0.6);
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .progress-text span.active-tab {
+            color: #ffffff;
+        }
+
+        .progress-bar-container {
+            display: flex;
+            gap: 6px;
+            width: 100%;
+        }
+
+        .progress-line {
+            height: 3px;
+            flex: 1;
+            background: rgba(255,255,255,0.2);
+            border-radius: 2px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-line.filled::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 0;
+            height: 100%;
+            width: 100%;
+            background: #ffffff;
+        }
+
+        /* Question and Options layouts */
+        .question-text {
+            font-size: 16px;
+            font-weight: 700;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            flex: 1;
+        }
+
+        .option-item {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1.5px solid rgba(255, 255, 255, 0.1);
+            padding: 14px 18px;
+            border-radius: 16px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s ease;
+            font-size: 13.5px;
+        }
+
+        .option-item:hover {
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .option-item.selected {
+            background: rgba(52, 199, 89, 0.2);
+            border-color: rgba(52, 199, 89, 0.8);
+        }
+
+        .checkbox-circle {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.4);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.2s ease;
+        }
+
+        .option-item.selected .checkbox-circle {
+            background: #34c759;
+            border-color: #34c759;
+        }
+
+        .option-item.selected .checkbox-circle::after {
+            content: '✓';
+            color: white;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        /* Multi-select limit indicator */
+        .limit-indicator {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.6);
+            text-align: center;
+            margin-top: -10px;
+            margin-bottom: 15px;
+        }
+
+        /* Action Buttons */
+        .bottom-actions {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border-radius: 16px;
+            font-size: 14px;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background-color: #ffffff;
+            color: #1c9441;
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Screen States Control */
+        .screen {
+            display: none;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        /* Screen 1: Terms Popup Modal Style */
+        .terms-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.4);
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            padding: 16px;
+        }
+
+        .terms-popup {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            width: 100%;
+            border-radius: 28px;
+            padding: 24px;
+            color: #000000;
+            box-shadow: 0 -10px 30px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+
+        .terms-popup h3 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .terms-popup p {
+            font-size: 13px;
+            line-height: 1.6;
+            color: #333333;
+            margin-bottom: 20px;
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .custom-checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #007aff;
+            border-radius: 6px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .custom-checkbox.checked {
+            background: #007aff;
+        }
+
+        .custom-checkbox.checked::after {
+            content: '✓';
+            color: white;
+            font-size: 12px;
+        }
+
+        /* Success Screen Graphics */
+        .success-graphic {
+            width: 80px;
+            height: 80px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 40px auto 20px auto;
+            position: relative;
+        }
+
+        .success-graphic::after {
+            content: '✓';
+            font-size: 40px;
+            color: #ffffff;
+            font-weight: bold;
+        }
+
+        .success-title {
+            font-size: 22px;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .success-desc {
+            font-size: 13px;
+            text-align: center;
+            color: rgba(255,255,255,0.8);
+            line-height: 1.6;
+            margin-bottom: 40px;
+        }
+
+        .decorations {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            color: rgba(255,255,255,0.4);
+            font-size: 14px;
+            margin-top: auto;
+        }
     </style>
 </head>
 <body>
 
     <div class="phone-container">
+        <!-- Top Telegram Interface Mock Bar -->
         <div class="top-bar">
-            <div class="close-btn" onclick="window.Telegram.WebApp.close()">✕</div>
+            <div class="close-btn">✕</div>
+            <div class="bot-title-center">
+                <h1>Moderator</h1>
+                <p>Bot</p>
+            </div>
+            <div class="more-btn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
         </div>
 
+        <!-- Terms of Use Overlay -->
         <div class="terms-overlay" id="termsOverlay">
             <div class="terms-popup">
-                <h3>شرایط عضویت</h3>
-                <p style="margin: 15px 0;">تایید هویت برای امنیت گروه الزامی است.</p>
-                <button class="btn" style="background: #007aff; color: white;" onclick="acceptTerms()">متوجه شدم</button>
+                <h3>قوانین استفاده</h3>
+                <p>گروه <strong>مرجع فایل های معماری و عمران</strong> از ربات مدیریت برای تایید اعضای جدید استفاده می‌کند. برای باز کردن برنامه کوچک باید با قوانین موافقت کنید.</p>
+                
+                <div class="checkbox-container" onclick="toggleTermsCheckbox()">
+                    <div class="custom-checkbox checked" id="termsCheckbox"></div>
+                    <span>من با قوانین استفاده موافقت می‌کنم</span>
+                </div>
+
+                <button class="btn" style="background: #007aff; color: white;" onclick="acceptTerms()">ادامه</button>
+                <button class="btn" style="background: transparent; color: #007aff;" onclick="cancelTerms()">لغو</button>
             </div>
         </div>
 
+        <!-- Inside App Area -->
         <div class="app-card">
-            <!-- سوال ۱ -->
-            <div class="screen active" id="screen1">
-                <div class="question-text">وضعیت تحصیلی شما؟</div>
-                <div class="options-list">
-                    <div class="option-item" onclick="selectSingle(this, 'q1')"><span>دانشجو</span></div>
-                    <div class="option-item" onclick="selectSingle(this, 'q1')"><span>فارغ‌التحصیل</span></div>
+            
+            <!-- Standard Header Information -->
+            <div class="card-header">
+                <div class="group-icon">🏛️</div>
+                <div class="group-details">
+                    <h2>مرجع فایل های معماری و عمران</h2>
+                    <p>جهت ورود به گروه به سوالات کوتاه پاسخ دهید</p>
                 </div>
-                <button class="btn" id="btn1" disabled onclick="go(2)">مرحله بعد</button>
             </div>
 
-            <!-- سوال ۲ -->
-            <div class="screen" id="screen2">
-                <div class="question-text">از کجا با ما آشنا شدید؟</div>
-                <div class="options-list">
-                    <div class="option-item" onclick="selectSingle(this, 'q2')"><span>اینستاگرام</span></div>
-                    <div class="option-item" onclick="selectSingle(this, 'q2')"><span>دوستان</span></div>
+            <!-- QUESTION 1 SCREEN -->
+            <div class="screen active" id="screenQuestion1">
+                <div class="quiz-progress">
+                    <div class="progress-text">
+                        <span>🛡️ آزمون هویت</span>
+                        <span>•</span>
+                        <span class="active-tab">سوال ۱ از ۳</span>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-line filled"></div>
+                        <div class="progress-line"></div>
+                        <div class="progress-line"></div>
+                    </div>
                 </div>
-                <button class="btn" id="btn2" disabled onclick="go(3)">مرحله بعد</button>
+
+                <div class="question-text">برای تایید هویت، در کدام مقطع تحصیلی یا حوزه فعالیت دارید؟</div>
+                
+                <div class="options-list">
+                    <div class="option-item" onclick="selectSingleOption(this, 'q1')">
+                        <span>دانشجوی کارشناسی / کاردانی</span>
+                        <div class="checkbox-circle"></div>
+                    </div>
+                    <div class="option-item" onclick="selectSingleOption(this, 'q1')">
+                        <span>دانشجوی کارشناسی ارشد / دکتری</span>
+                        <div class="checkbox-circle"></div>
+                    </div>
+                    <div class="option-item" onclick="selectSingleOption(this, 'q1')">
+                        <span>فارغ‌التحصیل و مهندس ناظر/طراح</span>
+                        <div class="checkbox-circle"></div>
+                    </div>
+                    <div class="option-item" onclick="selectSingleOption(this, 'q1')">
+                        <span>علاقه‌مند به معماری و دکوراسیون</span>
+                        <div class="checkbox-circle"></div>
+                    </div>
+                </div>
+
+                <div class="bottom-actions">
+                    <button class="btn btn-primary" id="nextBtn1" disabled onclick="goToScreen(2)">مرحله بعد</button>
+                </div>
             </div>
 
-            <!-- سوال ۳ -->
-            <div class="screen" id="screen3">
-                <div class="question-text">علایق شما؟</div>
-                <div class="options-list">
-                    <div class="option-item" onclick="selectMulti(this)"><span>کافه معماری</span></div>
-                    <div class="option-item" onclick="selectMulti(this)"><span>فرصت شغلی</span></div>
+            <!-- QUESTION 2 SCREEN -->
+            <div class="screen" id="screenQuestion2">
+                <div class="quiz-progress">
+                    <div class="progress-text">
+                        <span>🛡️ آزمون هویت</span>
+                        <span>•</span>
+                        <span class="active-tab">سوال ۲ از ۳</span>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-line filled"></div>
+                        <div class="progress-line filled"></div>
+                        <div class="progress-line"></div>
+                    </div>
                 </div>
-                <button class="btn" id="btn3" disabled onclick="submit()">ثبت نهایی</button>
+
+                <div class="question-text">از کجا با گروه و مجموعه ما آشنا شدید؟</div>
+                
+                <div class="options-list">
+                    <div class="option-item" onclick="selectSingleOption(this, 'q2')">
+                        <span>پیج اینستاگرام ما (archit.ir)</span>
+                        <div class="checkbox-circle"></div>
+                    </div>
+                    <div class="option-item" onclick="selectSingleOption(this, 'q2')">
+                        <span>معرفی دوستان و همکاران</span>
+                        <div class="checkbox-circle"></div>
+                    </div>
+                    <div class="option-item" onclick="selectSingleOption(this, 'q2')">
+                        <span>گروه ها و کانال های تلگرامی دیگر</span>
+                        <div class="checkbox-circle"></div>
+                    </div>
+                    <div class="option-item" onclick="selectSingleOption(this, 'q2')">
+                        <span>جستجو در اینترنت و سایر شبکه ها</span>
+                        <div class="checkbox-circle"></div>
+                    </div>
+                </div>
+
+                <div class="bottom-actions">
+                    <button class="btn btn-primary" id="nextBtn2" disabled onclick="goToScreen(3)">مرحله بعد</button>
+                </div>
             </div>
+
+            <!-- QUESTION 3 SCREEN (MULTI-SELECT) -->
+            <div class="screen" id="screenQuestion3">
+                <div class="quiz-progress">
+                    <div class="progress-text">
+                        <span>🛡️ آزمون هویت</span>
+                        <span>•</span>
+                        <span class="active-tab">سوال ۳ از ۳</span>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-line filled"></div>
+                        <div class="progress-line filled"></div>
+                        <div class="progress-line filled"></div>
+                    </div>
+                </div>
+
+                <div class="question-text">به کدام‌یک از تاپیک‌ها و محتوای زیر بیشتر نیاز داری؟</div>
+                <div class="limit-indicator">میتوانی تا ۳ گزینه را انتخاب کنی</div>
+                
+                <div class="options-list" style="gap: 8px;">
+                    <div class="option-item" onclick="selectMultiOption(this)"><span>کافه معماری</span><div class="checkbox-circle"></div></div>
+                    <div class="option-item" onclick="selectMultiOption(this)"><span>فرصت های شغلی و کارآموزی</span><div class="checkbox-circle"></div></div>
+                    <div class="option-item" onclick="selectMultiOption(this)"><span>اتاق پرامپت</span><div class="checkbox-circle"></div></div>
+                    <div class="option-item" onclick="selectMultiOption(this)"><span>پرزانته و پرتفولیو</span><div class="checkbox-circle"></div></div>
+                    <div class="option-item" onclick="selectMultiOption(this)"><span>کتابخانه و ضوابط ملی</span><div class="checkbox-circle"></div></div>
+                    <div class="option-item" onclick="selectMultiOption(this)"><span>رادیو معماری</span><div class="checkbox-circle"></div></div>
+                    <div class="option-item" onclick="selectMultiOption(this)"><span>معماری جهان</span><div class="checkbox-circle"></div></div>
+                    <div class="option-item" onclick="selectMultiOption(this)"><span>بانک پروژه</span><div class="checkbox-circle"></div></div>
+                    <div class="option-item" onclick="selectMultiOption(this)"><span>فایل های گرافیکی و پست پرو</span><div class="checkbox-circle"></div></div>
+                    <div class="option-item" onclick="selectMultiOption(this)"><span>دنیای نرم افزار و پلاگین</span><div class="checkbox-circle"></div></div>
+                    <div class="option-item" onclick="selectMultiOption(this)"><span>آبجکت و فمیلی و متریال</span><div class="checkbox-circle"></div></div>
+                    <div class="option-item" onclick="selectMultiOption(this)"><span>پلان و نقشه های اجرایی</span><div class="checkbox-circle"></div></div>
+                    <div class="option-item" onclick="selectMultiOption(this)"><span>آکادمی آنلاین</span><div class="checkbox-circle"></div></div>
+                </div>
+
+                <div class="bottom-actions">
+                    <button class="btn btn-primary" id="nextBtn3" disabled onclick="submitForm()">ثبت و نهایی‌سازی</button>
+                </div>
+            </div>
+
+            <!-- SUCCESS SCREEN -->
+            <div class="screen" id="screenSuccess">
+                <div class="success-graphic"></div>
+                <div class="success-title">تایید شدی!</div>
+                <div class="success-desc">با موفقیت به ربات و مجموعه احراز هویت پیوستی. اطلاعات شما ثبت شد.</div>
+                
+                <button class="btn" style="background-color: #ffffff; color: #1c9441;" onclick="console.log('Redirecting to group...');">
+                    ورود به گروه مرجع فایل ها ➔
+                </button>
+
+                <div class="decorations">
+                    <span>🎵</span><span>★</span><span>✦</span><span>🎵</span><span>★</span><span>✦</span>
+                </div>
+            </div>
+
         </div>
     </div>
 
     <script>
-        const tg = window.Telegram.WebApp;
-        tg.expand();
-        tg.enableClosingConfirmation();
+        // State Management
+        let isTermsAccepted = true;
+        let formData = {
+            q1: null,
+            q2: null,
+            q3: [] // Array to store multiple selections
+        };
 
-        let finalData = { q1: "", q2: "", q3: [] };
+        // Logic for Terms
+        function toggleTermsCheckbox() {
+            const cb = document.getElementById('termsCheckbox');
+            isTermsAccepted = !isTermsAccepted;
+            if(isTermsAccepted) cb.classList.add('checked');
+            else cb.classList.remove('checked');
+        }
 
         function acceptTerms() {
-            document.getElementById('termsOverlay').classList.add('hidden');
+            if(!isTermsAccepted) {
+                alert('لطفا ابتدا با قوانین موافقت کنید.');
+                return;
+            }
+            document.getElementById('termsOverlay').style.display = 'none';
         }
 
-        function selectSingle(el, q) {
-            el.parentElement.querySelectorAll('.option-item').forEach(opt => opt.classList.remove('selected'));
-            el.classList.add('selected');
-            finalData[q] = el.innerText;
-            document.getElementById(q === 'q1' ? 'btn1' : 'btn2').disabled = false;
+        function cancelTerms() {
+            alert('عضویت لغو شد.');
         }
 
-        function selectMulti(el) {
-            const val = el.innerText;
-            if (el.classList.contains('selected')) {
-                el.classList.remove('selected');
-                finalData.q3 = finalData.q3.filter(i => i !== val);
+        // Logic for Question 1 & 2 (Single Select)
+        function selectSingleOption(element, step) {
+            const parent = element.parentElement;
+            const options = parent.querySelectorAll('.option-item');
+            options.forEach(opt => opt.classList.remove('selected'));
+            
+            element.classList.add('selected');
+            const value = element.querySelector('span').innerText;
+            
+            if(step === 'q1') {
+                formData.q1 = value;
+                document.getElementById('nextBtn1').disabled = false;
+            } else if(step === 'q2') {
+                formData.q2 = value;
+                document.getElementById('nextBtn2').disabled = false;
+            }
+        }
+
+        // Logic for Question 3 (Multi Select)
+        function selectMultiOption(element) {
+            const value = element.querySelector('span').innerText;
+
+            if (element.classList.contains('selected')) {
+                element.classList.remove('selected');
+                formData.q3 = formData.q3.filter(item => item !== value);
             } else {
-                el.classList.add('selected');
-                finalData.q3.push(val);
+                if (formData.q3.length >= 3) {
+                    alert('شما حداکثر می‌توانید ۳ گزینه را انتخاب کنید.');
+                    return;
+                }
+                element.classList.add('selected');
+                formData.q3.push(value);
             }
-            document.getElementById('btn3').disabled = finalData.q3.length === 0;
+            
+            document.getElementById('nextBtn3').disabled = formData.q3.length === 0;
         }
 
-        function go(num) {
+        // Navigation
+        function goToScreen(screenNumber) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById('screen' + num).classList.add('active');
+            
+            const screens = {
+                1: 'screenQuestion1',
+                2: 'screenQuestion2',
+                3: 'screenQuestion3',
+                4: 'screenSuccess'
+            };
+            
+            const target = document.getElementById(screens[screenNumber]);
+            if(target) target.classList.add('active');
         }
 
-        function submit() {
-            try {
-                // ارسال به تلگرام
-                const dataString = JSON.stringify(finalData);
-                tg.sendData(dataString);
-                
-                // بازخورد به کاربر
-                tg.HapticFeedback.notificationOccurred('success');
-                
-                // بستن بعد از اتمام (اختیاری: می‌توانی alert بگذاری که "ارسال شد")
-                // tg.close(); 
-            } catch (e) {
-                alert("خطا در ارسال: " + e.message);
-            }
+        // Final Submission
+        function submitForm() {
+            console.log("Form Data Submitted:", formData);
+            // Here you would typically perform a fetch request to your server
+            goToScreen(4);
         }
     </script>
 </body>
